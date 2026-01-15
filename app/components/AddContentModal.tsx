@@ -36,9 +36,9 @@ export default function AddContentModal(props: IAddContentModalProps) {
         </Text>
         <TouchableOpacity style={{ flexDirection: "column", gap: 5 }}>
           <Text style={{ color: "white" }}>Title</Text>
-          <TextInput style={{ ...textInputStyles }}>{props.title}</TextInput>
+          <TextInput style={{ ...textInputStyles }} value={props.title}/>
           <Text style={{ color: "white" }}>Link</Text>
-          <TextInput style={{ ...textInputStyles }}>{props.link}</TextInput>
+          <TextInput value={props.link} style={{ ...textInputStyles }}/>
           <TouchableOpacity style={{ flexDirection: "row", justifyContent: "center", marginTop: 20, gap: 20 }}>
           <Button onPress={props.onCancel} title="Cancel" />
           <Button onPress={() => props.onSave && props.onSave(props.title, props.link)} title="Save" />
