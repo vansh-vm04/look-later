@@ -12,8 +12,8 @@ export default function AddButton({ onPress }: { onPress: () => void }) {
 const styles = StyleSheet.create({
   button: {
     position: 'absolute',
-    bottom: 56,
-    right: 24,
+    bottom: 32,
+    right: 32,
     width: 56,
     height: 56,
     borderRadius: 28,
@@ -26,5 +26,7 @@ const styles = StyleSheet.create({
     fontSize: 28,
     color: '#fff',
     fontWeight: '600',
+    textAlign: 'center',
+    textAlignVertical: 'center',
   },
 });

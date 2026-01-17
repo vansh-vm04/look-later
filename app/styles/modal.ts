@@ -6,11 +6,3 @@ export const textInputStyles = {
     width: '100%' as any,
     color: 'white',
 }
-
-export const modalCard ={
-    backgroundColor: 'transparent',
-    padding: 20,
-    borderRadius: 10,
-    height: 100,
-    justifyContent: 'center' as any,
-}
