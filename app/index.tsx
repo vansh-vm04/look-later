@@ -13,7 +13,7 @@ import { HeaderTitle } from "@react-navigation/elements";
 import colors from "./styles/colors";
 import { Stack } from "expo-router";
 import AddContentButton from "./components/AddContentButton";
-import { getContentItems, saveContentItem } from "./storage/contentStorage";
+import { getContentItems, saveContentItem, updateContentList } from "./storage/contentStorage";
 import { Content } from "./types/content";
 import ContentCard from "./components/ContentCard";
 import { textInputStyles } from "./styles/modal";
@@ -72,7 +72,9 @@ export default function Index(props: IndexProps) {
 
   const onDelete = (id: string) => {
     const updatedContent = content.filter((item) => item.id !== id);
+    updateContentList(updatedContent);
     setContent(updatedContent);
+    ToastAndroid.show("Content deleted", ToastAndroid.SHORT);
   };
 
   return (
@@ -104,9 +106,13 @@ export default function Index(props: IndexProps) {
           {content.length === 0 ? (
             <Text
               style={{
-                fontSize: 16,
+                fontSize: 18,
                 color: colors.textSecondary,
                 marginTop: 10,
+                textAlignVertical: "center",
+                textAlign: "center",
+                height: '100%' as any,
+                paddingHorizontal: 60,
               }}
             >
               No content saved yet. Click the + button to add.
@@ -115,6 +121,7 @@ export default function Index(props: IndexProps) {
             <View style={{ width: "90%", marginTop: 20 }}>
               {content.map((item) => (
                 <ContentCard
+                  onDelete={() => onDelete(item.id)}
                   key={item.id}
                   title={item.title}
                   link={item.link}

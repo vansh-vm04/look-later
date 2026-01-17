@@ -10,6 +10,9 @@ export function saveContentItem(item: Content) {
   storage.set(contentKey, JSON.stringify(updatedContent));
 }
 
+export function updateContentList(items: Content[]) {
+  storage.set(contentKey, JSON.stringify(items));
+}
 export function getContentItems(): Content[] {
   const storedContent = storage.getString(contentKey);
   return storedContent ? JSON.parse(storedContent) : [];
