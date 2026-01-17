@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { use, useEffect, useRef, useState } from "react";
 import {
   Button,
   Text,
@@ -8,29 +8,44 @@ import {
   Modal,
   StyleSheet,
   KeyboardAvoidingView,
+  ScrollView,
 } from "react-native";
 import { HeaderTitle } from "@react-navigation/elements";
 import colors from "./styles/colors";
 import { Stack } from "expo-router";
 import AddContentButton from "./components/AddContentButton";
-import { getContentItems, saveContentItem, updateContentList } from "./storage/contentStorage";
+import {
+  getContentItems,
+  saveContentItem,
+  updateContentList,
+} from "./storage/contentStorage";
 import { Content } from "./types/content";
 import ContentCard from "./components/ContentCard";
 import { textInputStyles } from "./styles/modal";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
+import { useShareIntent } from "expo-share-intent";
 
-interface IndexProps {
-  link?: string;
-  title?: string;
-  isShare?: boolean;
-}
-
-export default function Index(props: IndexProps) {
-  const [title, setTitle] = useState(props.title || "");
-  const [link, setLink] = useState(props.link || "");
-  const [addContent, setAddContent] = useState(props.isShare || false);
+export default function Index() {
+  const [title, setTitle] = useState("");
+  const [link, setLink] = useState("");
+  const [addContent, setAddContent] = useState(false);
   const [content, setContent] = useState<Content[]>([]);
   const titleRef = useRef<TextInput>(null);
+  const { hasShareIntent, shareIntent, resetShareIntent, error } =
+    useShareIntent();
+
+  useEffect(() => {
+    // Logic to handle received shared content goes here
+    if (hasShareIntent && shareIntent) {
+      const recievedUrl = shareIntent.webUrl || shareIntent.text || "";
+      setAddContent(true);
+      setLink(recievedUrl);
+      resetShareIntent();
+    }
+    if (error) {
+      console.log("Error receiving share intent: ", error);
+    }
+  }, [hasShareIntent, shareIntent, error]);
 
   useEffect(() => {
     setContent(getContentItems());
@@ -91,118 +106,121 @@ export default function Index(props: IndexProps) {
             },
           }}
         />
-        <View
-          style={{
-            flex: 1,
-            justifyContent: "flex-start",
-            alignItems: "center",
-            backgroundColor: colors.background,
-            paddingBottom: 100,
-          }}
-        >
-          <Text style={{ fontSize: 24, fontWeight: "bold", marginTop: 20 }}>
-            Welcome!
-          </Text>
-          {content.length === 0 ? (
-            <Text
-              style={{
-                fontSize: 18,
-                color: colors.textSecondary,
-                marginTop: 10,
-                textAlignVertical: "center",
-                textAlign: "center",
-                height: '100%' as any,
-                paddingHorizontal: 60,
-              }}
-            >
-              No content saved yet. Click the + button to add.
-            </Text>
-          ) : (
-            <View style={{ width: "90%", marginTop: 20 }}>
-              {content.map((item) => (
-                <ContentCard
-                  onDelete={() => onDelete(item.id)}
-                  key={item.id}
-                  title={item.title}
-                  link={item.link}
-                />
-              ))}
-            </View>
-          )}
-          <Modal
-            animationType="slide"
-            visible={addContent}
-            onRequestClose={onCancel}
-            backdropColor={"rgba(0, 0, 0, 0.5)"}
+        <ScrollView style={{ height: "100%" , backgroundColor: colors.background }}>
+          <View
+            style={{
+              flex: 1,
+              justifyContent: "flex-start",
+              alignItems: "center",
+              backgroundColor: colors.background,
+              paddingBottom: 100,
+              height: "100%",
+            }}
           >
-            <View style={styles.centeredView}>
-              <KeyboardAvoidingView behavior="padding">
-              <View
+            <Text style={{ fontSize: 24, fontWeight: "bold", marginTop: 20 }}>
+              Welcome!
+            </Text>
+            {content.length === 0 ? (
+              <Text
                 style={{
-                  height: 300,
-                  justifyContent: "center",
-                  backgroundColor: "#1F2937",
-                  padding: 20,
-                  borderRadius: 10,
-                  gap: 10,
+                  fontSize: 18,
+                  color: colors.textSecondary,
+                  marginTop: 10,
+                  textAlignVertical: "center",
+                  textAlign: "center",
+                  height: "100%" as any,
+                  paddingHorizontal: 60,
                 }}
               >
-                <Text
-                  style={{
-                    color: "white",
-                    textAlign: "center",
-                    fontStyle: "bold" as any,
-                    fontSize: 18,
-                  }}
-                >
-                  Content Details
-                </Text>
-                <Text style={{ color: "white" }}>Title</Text>
-                <TextInput
-                  placeholder="Example: Elon's podcast"
-                  placeholderTextColor={"gray"}
-                  onChangeText={setTitle}
-                  style={{ ...textInputStyles }}
-                  value={title}
-                  ref={titleRef}
-                />
-                <Text style={{ color: "white" }}>Link</Text>
-                <TextInput
-                  placeholder="https://example.com"
-                  placeholderTextColor={"gray"}
-                  onChangeText={setLink}
-                  style={{ ...textInputStyles }}
-                  value={link}
-                />
-                <View
-                  style={{
-                    flexDirection: "row",
-                    justifyContent: "center",
-                    marginTop: 20,
-                    gap: 20,
-                  }}
-                >
-                  <Button
-                    color={"rgb(245, 58, 58)"}
-                    onPress={onCancel}
-                    title="Cancel"
+                No content saved yet. Click the + button to add.
+              </Text>
+            ) : (
+              <View style={{ width: "90%", marginTop: 20 }}>
+                {content.map((item) => (
+                  <ContentCard
+                    onDelete={() => onDelete(item.id)}
+                    key={item.id}
+                    title={item.title}
+                    link={item.link}
                   />
-                  <Button
-                    color={colors.primary}
-                    onPress={() => onSave(title, link)}
-                    title="Save"
-                  />
-                </View>
+                ))}
               </View>
-              </KeyboardAvoidingView>
-            </View>
-          </Modal>
-          <AddContentButton
-            onPress={() => {
-              setAddContent(true);
-            }}
-          />
-        </View>
+            )}
+            <Modal
+              animationType="slide"
+              visible={addContent}
+              onRequestClose={onCancel}
+              backdropColor={"rgba(0, 0, 0, 0.5)"}
+            >
+              <View style={styles.centeredView}>
+                <KeyboardAvoidingView behavior="padding">
+                  <View
+                    style={{
+                      height: 300,
+                      justifyContent: "center",
+                      backgroundColor: "#1F2937",
+                      padding: 20,
+                      borderRadius: 10,
+                      gap: 10,
+                    }}
+                  >
+                    <Text
+                      style={{
+                        color: "white",
+                        textAlign: "center",
+                        fontStyle: "bold" as any,
+                        fontSize: 18,
+                      }}
+                    >
+                      Content Details
+                    </Text>
+                    <Text style={{ color: "white" }}>Title</Text>
+                    <TextInput
+                      placeholder="Example: Elon's podcast"
+                      placeholderTextColor={"gray"}
+                      onChangeText={setTitle}
+                      style={{ ...textInputStyles }}
+                      value={title}
+                      ref={titleRef}
+                    />
+                    <Text style={{ color: "white" }}>Link</Text>
+                    <TextInput
+                      placeholder="https://example.com"
+                      placeholderTextColor={"gray"}
+                      onChangeText={setLink}
+                      style={{ ...textInputStyles }}
+                      value={link}
+                    />
+                    <View
+                      style={{
+                        flexDirection: "row",
+                        justifyContent: "center",
+                        marginTop: 20,
+                        gap: 20,
+                      }}
+                    >
+                      <Button
+                        color={"rgb(245, 58, 58)"}
+                        onPress={onCancel}
+                        title="Cancel"
+                      />
+                      <Button
+                        color={colors.primary}
+                        onPress={() => onSave(title, link)}
+                        title="Save"
+                      />
+                    </View>
+                  </View>
+                </KeyboardAvoidingView>
+              </View>
+            </Modal>
+          </View>
+        </ScrollView>
+        <AddContentButton
+          onPress={() => {
+            setAddContent(true);
+          }}
+        />
       </SafeAreaView>
     </SafeAreaProvider>
   );

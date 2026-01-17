@@ -12,7 +12,7 @@ export default function AddButton({ onPress }: { onPress: () => void }) {
 const styles = StyleSheet.create({
   button: {
     position: 'absolute',
-    bottom: 32,
+    bottom: 76,
     right: 32,
     width: 56,
     height: 56,
