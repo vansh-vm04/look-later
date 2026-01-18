@@ -24,7 +24,7 @@
         }
       ],
       "adaptiveIcon": {
-        "backgroundColor": "#E6F4FE",
+        "backgroundColor": "transparent",
         "foregroundImage": "./assets/images/looklater-icon.png",
         "backgroundImage": "./assets/images/looklater-icon.png",
         "monochromeImage": "./assets/images/looklater-icon.png"
@@ -59,7 +59,8 @@
           },
           "androidIntentFilters": ["text/*"]
         }
-      ]
+      ],
+      "expo-font"
     ],
     "experiments": {
       "typedRoutes": true,

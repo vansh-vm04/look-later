@@ -1,4 +1,4 @@
-import { use, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   Button,
   Text,
@@ -24,6 +24,7 @@ import ContentCard from "./components/ContentCard";
 import { textInputStyles } from "./styles/modal";
 import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import { useShareIntent } from "expo-share-intent";
+import { HEADER_LINES } from "./constants/headerLines";
 
 export default function Index() {
   const [title, setTitle] = useState("");
@@ -33,6 +34,11 @@ export default function Index() {
   const titleRef = useRef<TextInput>(null);
   const { hasShareIntent, shareIntent, resetShareIntent, error } =
     useShareIntent();
+  const [headerLine, setHeaderLine] = useState("Hey👋, Welcome!");
+
+  const getRandomHeaderLine = () => {
+    return HEADER_LINES[Math.floor(Math.random() * HEADER_LINES.length)];
+  };
 
   useEffect(() => {
     // Logic to handle received shared content goes here
@@ -49,6 +55,7 @@ export default function Index() {
 
   useEffect(() => {
     setContent(getContentItems());
+    setHeaderLine(getRandomHeaderLine());
   }, []);
 
   useEffect(() => {
@@ -94,31 +101,55 @@ export default function Index() {
 
   return (
     <SafeAreaProvider>
-      <SafeAreaView style={{ flex: 1 }}>
+      <SafeAreaView style={{ flex: 1, backgroundColor: colors.primary }}>
         <Stack.Screen
           options={{
-            headerTitle: () => <HeaderTitle>LookLater</HeaderTitle>,
+            headerTitle: () => (
+              <HeaderTitle
+                style={{
+                  fontFamily: "Poppins_700Bold",
+                  color: "#ffffff",
+                  fontWeight: "bold" as any,
+                  fontSize: 20,
+                }}
+              >
+                LookLater
+              </HeaderTitle>
+            ),
             headerStyle: {
-              backgroundColor: colors.background,
+              backgroundColor: colors.primary,
             },
-            headerTitleStyle: {
-              color: colors.text,
-            },
+            headerShadowVisible: false,
           }}
         />
-        <ScrollView style={{ height: "100%" , backgroundColor: colors.background }}>
+        <ScrollView
+          style={{
+            height: "100%",
+            backgroundColor: colors.lightBg,
+            borderRadius: 24,
+          }}
+        >
           <View
             style={{
               flex: 1,
               justifyContent: "flex-start",
               alignItems: "center",
-              backgroundColor: colors.background,
+              backgroundColor: colors.lightBg,
               paddingBottom: 100,
               height: "100%",
             }}
           >
-            <Text style={{ fontSize: 24, fontWeight: "bold", marginTop: 20 }}>
-              Welcome!
+            <Text
+              style={{
+                fontSize: 24,
+                fontFamily: "Poppins_700Bold",
+                fontWeight: "semibold" as any,
+                marginTop: 20,
+                color: colors.primary,
+                paddingHorizontal: 20,
+              }}
+            >
+              {headerLine}
             </Text>
             {content.length === 0 ? (
               <Text
@@ -136,8 +167,10 @@ export default function Index() {
               </Text>
             ) : (
               <View style={{ width: "90%", marginTop: 20 }}>
-                {content.map((item) => (
+                {content.map((item, index) => (
                   <ContentCard
+                    index={index}
+                    savedAt={new Date(item.createdAt)}
                     onDelete={() => onDelete(item.id)}
                     key={item.id}
                     title={item.title}
