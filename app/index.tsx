@@ -1,4 +1,3 @@
-import { HeaderTitle } from "@react-navigation/elements";
 import { Stack } from "expo-router";
 import { useShareIntent } from "expo-share-intent";
 import { useEffect, useRef, useState } from "react";
@@ -105,9 +104,9 @@ export default function Index() {
         <Stack.Screen
           options={{
             headerTitle: () => (
-              <HeaderTitle style={indexStyles.headerTitle}>
+              <Text style={indexStyles.headerTitle}>
                 LookLater
-              </HeaderTitle>
+              </Text>
             ),
             headerStyle: indexStyles.headerStyle,
             headerShadowVisible: false,

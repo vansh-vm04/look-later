@@ -1,5 +1,5 @@
 import { useFonts } from '@expo-google-fonts/inter';
-import { Poppins_400Regular, Poppins_700Bold } from '@expo-google-fonts/poppins';
+import { Poppins_400Regular, Poppins_700Bold, Poppins_500Medium } from '@expo-google-fonts/poppins';
 import { SplashScreen, Stack } from "expo-router";
 import { useEffect } from 'react';
 
@@ -8,7 +8,8 @@ SplashScreen.preventAutoHideAsync();
 export default function RootLayout() {
   const [loaded, error] = useFonts({
     Poppins_400Regular,
-    Poppins_700Bold
+    Poppins_700Bold,
+    Poppins_500Medium
   });
 
   useEffect(() => {

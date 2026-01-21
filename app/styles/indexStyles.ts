@@ -41,9 +41,8 @@ export const indexStyles = StyleSheet.create({
     marginTop: 20,
   },
   headerTitle: {
-    fontFamily: "Poppins_700Bold",
+    fontFamily: "Poppins_500Medium",
     color: "#ffffff",
-    fontWeight: "bold" as any,
     fontSize: 20,
   },
   headerStyle: {
