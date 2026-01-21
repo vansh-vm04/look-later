@@ -62,7 +62,7 @@ export default function Index() {
     if (addContent) {
       setTimeout(() => {
         titleRef.current?.focus();
-      }, 150);
+      }, 300);
     }
   }, [addContent]);
 
