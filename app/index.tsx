@@ -1,30 +1,30 @@
+import { HeaderTitle } from "@react-navigation/elements";
+import { Stack } from "expo-router";
+import { useShareIntent } from "expo-share-intent";
 import { useEffect, useRef, useState } from "react";
 import {
   Button,
+  KeyboardAvoidingView,
+  Modal,
+  ScrollView,
   Text,
   TextInput,
-  View,
   ToastAndroid,
-  Modal,
-  StyleSheet,
-  KeyboardAvoidingView,
-  ScrollView,
+  View,
 } from "react-native";
-import { HeaderTitle } from "@react-navigation/elements";
-import colors from "./styles/colors";
-import { Stack } from "expo-router";
+import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
 import AddContentButton from "./components/AddContentButton";
+import ContentCard from "./components/ContentCard";
+import { HEADER_LINES } from "./constants/headerLines";
 import {
   getContentItems,
   saveContentItem,
   updateContentList,
 } from "./storage/contentStorage";
+import colors from "./styles/colors";
+import { indexStyles } from "./styles/indexStyles";
+import { textInputStylesCompat } from "./styles/modal";
 import { Content } from "./types/content";
-import ContentCard from "./components/ContentCard";
-import { textInputStyles } from "./styles/modal";
-import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
-import { useShareIntent } from "expo-share-intent";
-import { HEADER_LINES } from "./constants/headerLines";
 
 export default function Index() {
   const [title, setTitle] = useState("");
@@ -101,72 +101,27 @@ export default function Index() {
 
   return (
     <SafeAreaProvider>
-      <SafeAreaView style={{ flex: 1, backgroundColor: colors.primary }}>
+      <SafeAreaView style={indexStyles.safeAreaView}>
         <Stack.Screen
           options={{
             headerTitle: () => (
-              <HeaderTitle
-                style={{
-                  fontFamily: "Poppins_700Bold",
-                  color: "#ffffff",
-                  fontWeight: "bold" as any,
-                  fontSize: 20,
-                }}
-              >
+              <HeaderTitle style={indexStyles.headerTitle}>
                 LookLater
               </HeaderTitle>
             ),
-            headerStyle: {
-              backgroundColor: colors.primary,
-            },
+            headerStyle: indexStyles.headerStyle,
             headerShadowVisible: false,
           }}
         />
-        <ScrollView
-          style={{
-            height: "100%",
-            backgroundColor: colors.lightBg,
-            borderRadius: 24,
-          }}
-        >
-          <View
-            style={{
-              flex: 1,
-              justifyContent: "flex-start",
-              alignItems: "center",
-              backgroundColor: colors.lightBg,
-              paddingBottom: 100,
-              height: "100%",
-            }}
-          >
-            <Text
-              style={{
-                fontSize: 24,
-                fontFamily: "Poppins_700Bold",
-                fontWeight: "semibold" as any,
-                marginTop: 20,
-                color: colors.primary,
-                paddingHorizontal: 20,
-              }}
-            >
-              {headerLine}
-            </Text>
+        <ScrollView style={indexStyles.scrollView}>
+          <View style={indexStyles.mainContainer}>
+            <Text style={indexStyles.headerText}>{headerLine}</Text>
             {content.length === 0 ? (
-              <Text
-                style={{
-                  fontSize: 18,
-                  color: colors.textSecondary,
-                  marginTop: 10,
-                  textAlignVertical: "center",
-                  textAlign: "center",
-                  height: "100%" as any,
-                  paddingHorizontal: 60,
-                }}
-              >
+              <Text style={indexStyles.emptyText}>
                 No content saved yet. Click the + button to add.
               </Text>
             ) : (
-              <View style={{ width: "90%", marginTop: 20 }}>
+              <View style={indexStyles.contentList}>
                 {content.map((item, index) => (
                   <ContentCard
                     index={index}
@@ -185,53 +140,28 @@ export default function Index() {
               onRequestClose={onCancel}
               backdropColor={"rgba(0, 0, 0, 0.5)"}
             >
-              <View style={styles.centeredView}>
+              <View style={indexStyles.centeredView}>
                 <KeyboardAvoidingView behavior="padding">
-                  <View
-                    style={{
-                      height: 300,
-                      justifyContent: "center",
-                      backgroundColor: "#1F2937",
-                      padding: 20,
-                      borderRadius: 10,
-                      gap: 10,
-                    }}
-                  >
-                    <Text
-                      style={{
-                        color: "white",
-                        textAlign: "center",
-                        fontStyle: "bold" as any,
-                        fontSize: 18,
-                      }}
-                    >
-                      Content Details
-                    </Text>
-                    <Text style={{ color: "white" }}>Title</Text>
+                  <View style={indexStyles.modalContent}>
+                    <Text style={indexStyles.modalTitle}>Content Details</Text>
+                    <Text style={indexStyles.modalLabel}>Title</Text>
                     <TextInput
                       placeholder="Example: Elon's podcast"
                       placeholderTextColor={"gray"}
                       onChangeText={setTitle}
-                      style={{ ...textInputStyles }}
+                      style={textInputStylesCompat}
                       value={title}
                       ref={titleRef}
                     />
-                    <Text style={{ color: "white" }}>Link</Text>
+                    <Text style={indexStyles.modalLabel}>Link</Text>
                     <TextInput
                       placeholder="https://example.com"
                       placeholderTextColor={"gray"}
                       onChangeText={setLink}
-                      style={{ ...textInputStyles }}
+                      style={textInputStylesCompat}
                       value={link}
                     />
-                    <View
-                      style={{
-                        flexDirection: "row",
-                        justifyContent: "center",
-                        marginTop: 20,
-                        gap: 20,
-                      }}
-                    >
+                    <View style={indexStyles.buttonContainer}>
                       <Button
                         color={"rgb(245, 58, 58)"}
                         onPress={onCancel}
@@ -258,11 +188,3 @@ export default function Index() {
     </SafeAreaProvider>
   );
 }
-
-const styles = StyleSheet.create({
-  centeredView: {
-    flex: 1,
-    justifyContent: "center",
-    padding: 20,
-  },
-});

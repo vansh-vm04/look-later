@@ -1,7 +1,8 @@
-import { View, Text, TouchableOpacity, Linking, StyleSheet } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 import React from "react";
+import { Linking, Text, TouchableOpacity, View } from "react-native";
 import colors from "../styles/colors";
+import { contentCardStyles } from "../styles/contentCard";
 
 export default function ContentCard({
   title,
@@ -36,7 +37,7 @@ export default function ContentCard({
   return (
     <View
       style={{
-        ...styles.card,
+        ...contentCardStyles.card,
         backgroundColor: getCardColor(index),
         borderColor: getCardBorderColor(index),
         borderWidth: 1,
@@ -50,11 +51,11 @@ export default function ContentCard({
           // Open the link in a web browser
           Linking.openURL(link);
         }}
-        style={{ width: "90%" }}
+        style={contentCardStyles.contentContainer}
       >
-        <Text style={styles.title}>{title}</Text>
-        <Text style={styles.link}>{getDomainFromUrl(link)}</Text>
-        <Text style={styles.dateTime}>
+        <Text style={contentCardStyles.title}>{title}</Text>
+        <Text style={contentCardStyles.link}>{getDomainFromUrl(link)}</Text>
+        <Text style={contentCardStyles.dateTime}>
           Saved on{" "}
           {savedAt.toLocaleTimeString([], {
             hour: "2-digit",
@@ -74,33 +75,3 @@ export default function ContentCard({
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  title: {
-    fontSize: 16,
-    fontWeight: "bold",
-    color: "#222222",
-    fontFamily: "Poppins_400Bold",
-  },
-  link: {
-    fontSize: 14,
-    color: "#a0a0a1",
-    marginTop: 2,
-    fontFamily: "Poppins_400Regular",
-  },
-  dateTime: {
-    fontSize: 12,
-    color: "#a0a0a1",
-    marginTop: 12,
-    fontFamily: "Poppins_400Regular",
-  },
-  card: {
-    flexDirection: "row",
-    borderRadius: 24,
-    marginBottom: 10,
-    justifyContent: "space-between",
-    alignItems: "center",
-    padding: 16,
-    fontFamily: "Poppins_400Regular",
-  },
-});
